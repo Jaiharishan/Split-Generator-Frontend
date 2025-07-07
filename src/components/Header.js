@@ -69,7 +69,7 @@ function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo and Navigation */}
           <div className="flex items-center space-x-8">
-            <Link to={user ? "/bills" : "/"} className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
               <Receipt className="h-8 w-8 text-primary-600 dark:text-primary-400" />
               <span className="text-xl font-bold text-gray-900 dark:text-white">
                 Split Generator
@@ -95,12 +95,6 @@ function Header() {
                   className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Templates
-                </Link>
-                <Link
-                  to="/api-test"
-                  className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  API Test
                 </Link>
               </nav>
             )}

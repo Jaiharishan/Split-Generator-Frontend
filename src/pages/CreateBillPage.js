@@ -618,7 +618,7 @@ function CreateBillPage() {
           <div className="flex justify-end space-x-4">
             <button
               type="button"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/bills')}
               className="btn-secondary"
             >
               Cancel

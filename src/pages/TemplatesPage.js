@@ -63,8 +63,12 @@ function TemplatesPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.name.trim() || formData.participants.length === 0) {
-      setError('Template name and at least one participant are required');
+    if (!formData.name.trim()) {
+      setError('Template name is required');
+      return;
+    }
+    if (!editingTemplate && formData.participants.length === 0) {
+      setError('At least one participant is required');
       return;
     }
 
@@ -269,7 +273,7 @@ function TemplatesPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Participants *
+                      Participants{!editingTemplate && ' *'}
                     </label>
                     
                     {/* Add Participant */}

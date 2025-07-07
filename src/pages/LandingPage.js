@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Receipt, Users, DollarSign, Upload, Shield, Zap, ArrowRight } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 function LandingPage() {
+  const { user } = useAuth();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Hero Section */}
@@ -25,21 +27,33 @@ function LandingPage() {
               Perfect for roommates, friends, and group expenses.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/login"
-                className="btn-primary text-lg px-8 py-4 flex items-center justify-center"
-              >
-                Get Started
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-              <Link
-                to="/login"
-                className="btn-secondary text-lg px-8 py-4"
-              >
-                Sign In
-              </Link>
-            </div>
+            {!user ? (
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  to="/login"
+                  className="btn-primary text-lg px-8 py-4 flex items-center justify-center"
+                >
+                  Get Started
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+                <Link
+                  to="/login"
+                  className="btn-secondary text-lg px-8 py-4"
+                >
+                  Sign In
+                </Link>
+              </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  to="/bills"
+                  className="btn-primary text-lg px-8 py-4 flex items-center justify-center"
+                >
+                  Go to Your Bills
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
