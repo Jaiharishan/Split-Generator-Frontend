@@ -1,24 +1,83 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { AuthProvider } from './contexts/AuthContext';
+import Header from './components/Header';
+import ProtectedRoute from './components/ProtectedRoute';
+import LandingPage from './pages/LandingPage';
+import BillsPage from './pages/BillsPage';
+import CreateBillPage from './pages/CreateBillPage';
+import BillDetailPage from './pages/BillDetailPage';
+import TemplatesPage from './pages/TemplatesPage';
+import SettingsPage from './pages/SettingsPage';
+import LoginPage from './pages/LoginPage';
+import ApiTestPage from './pages/ApiTestPage';
+import './index.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <div className="App">
+            <Header />
+            <main>
+              <Routes>
+                {/* Public routes */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/" element={<LandingPage />} />
+                
+                {/* Protected routes */}
+                <Route path="/bills" element={
+                  <ProtectedRoute>
+                    <BillsPage />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/create" element={
+                  <ProtectedRoute>
+                    <CreateBillPage />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/create-bill" element={
+                  <ProtectedRoute>
+                    <CreateBillPage />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/bill/:id" element={
+                  <ProtectedRoute>
+                    <BillDetailPage />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/templates" element={
+                  <ProtectedRoute>
+                    <TemplatesPage />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/settings" element={
+                  <ProtectedRoute>
+                    <SettingsPage />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/api-test" element={
+                  <ProtectedRoute>
+                    <ApiTestPage />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Redirect unknown routes to home */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </main>
+          </div>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
