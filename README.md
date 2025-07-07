@@ -1,70 +1,102 @@
-# Getting Started with Create React App
+# Split Generator – Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Split Generator is a modern web app for splitting grocery bills and group expenses. Upload e-bills or receipt images, add participants, assign products, and instantly see who owes what. The frontend is built with React, Tailwind CSS, and provides a beautiful, responsive, and accessible user experience.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🌟 Product Overview
 
-### `npm start`
+**Split Generator** makes group bill splitting effortless:
+- Upload receipts (images or PDFs) and extract items using OCR
+- Add participants and assign products to each person
+- See real-time totals and who owes what
+- Save participant groups as templates for quick reuse
+- Export bills for record-keeping
+- Secure authentication (email/password & Google OAuth)
+- Light/dark theme support
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Features
 
-### `npm test`
+- **Receipt Upload & OCR**: Upload images or PDFs, extract items using Tesseract.js and PDF.js
+- **Participant Management**: Add, edit, and color-code participants
+- **Product Assignment**: Assign products to participants, split costs automatically
+- **Bill Templates**: Save and reuse common participant groups
+- **Bill Export**: Download a text summary of any bill
+- **Authentication**: Register, login, Google OAuth, protected routes
+- **Responsive UI**: Works great on desktop and mobile
+- **Dark Mode**: Beautiful, accessible dark theme
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🛠️ Tech Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **React** (with hooks & context)
+- **React Router** (routing)
+- **Tailwind CSS** (utility-first styling, dark mode)
+- **Lucide React** (icons)
+- **Tesseract.js** (client-side OCR)
+- **PDF.js** (PDF parsing)
+- **Axios** (API requests)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## ⚡ Getting Started
 
-### `npm run eject`
+### 1. Install dependencies
+```bash
+cd client
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 2. Configure environment
+Create a `.env` file in the `client` folder:
+```
+REACT_APP_API_URL=http://localhost:5000/api
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 3. Start the frontend
+```bash
+npm start
+```
+The app will run at [http://localhost:3000](http://localhost:3000)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🔑 Authentication
+- Register with email/password or sign in with Google
+- All bill data is user-specific and private
+- Protected routes ensure only authenticated users can access bills
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🧾 Bill Splitting Flow
+1. **Create Bill**: Enter a title, upload a receipt, or add products manually
+2. **Add Participants**: Add names and assign colors
+3. **Assign Products**: Assign each product to one or more participants
+4. **View Totals**: See who owes what in real time
+5. **Export Bill**: Download a summary for your records
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## 🗂️ Project Structure
+- `src/pages/` – Main pages (Home, Bills, Create, Bill Details, Templates, Settings)
+- `src/components/` – UI components (Header, ReceiptParser, GoogleOAuth, etc.)
+- `src/contexts/` – React context for auth, theme, etc.
+- `src/services/` – API and utility services
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🤝 Contributing
+Pull requests and suggestions are welcome! Please open an issue for major changes.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 📄 License
+MIT License. See main repo for details.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 💡 About
+Split Generator is designed to make group expense splitting painless, accurate, and fun. Built with love for roommates, friends, and anyone who hates doing math after shopping!
