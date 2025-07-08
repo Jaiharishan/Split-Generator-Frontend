@@ -136,16 +136,16 @@ function TemplatesPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Bill Templates</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Bill Templates</h1>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
               Save and reuse participant groups for quick bill creation
             </p>
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="btn-primary flex items-center space-x-2"
+            className="btn-primary flex items-center space-x-2 w-full sm:w-auto justify-center"
           >
             <Plus className="h-5 w-5" />
             <span>Create Template</span>
@@ -184,26 +184,28 @@ function TemplatesPage() {
                 className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
                       {template.name}
                     </h3>
                     {template.description && (
-                      <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+                      <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 line-clamp-2">
                         {template.description}
                       </p>
                     )}
                   </div>
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-2 ml-3 flex-shrink-0">
                     <button
                       onClick={() => handleEdit(template)}
                       className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      aria-label="Edit template"
                     >
                       <Edit className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(template.id)}
                       className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                      aria-label="Delete template"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -277,7 +279,7 @@ function TemplatesPage() {
                     </label>
                     
                     {/* Add Participant */}
-                    <div className="flex space-x-2 mb-3">
+                    <div className="flex flex-col sm:flex-row gap-2 mb-3">
                       <input
                         type="text"
                         value={newParticipant.name}
@@ -285,19 +287,21 @@ function TemplatesPage() {
                         className="input flex-1"
                         placeholder="Participant name"
                       />
-                      <input
-                        type="color"
-                        value={newParticipant.color}
-                        onChange={(e) => setNewParticipant(prev => ({ ...prev, color: e.target.value }))}
-                        className="w-12 h-10 rounded border border-gray-300 dark:border-gray-600"
-                      />
-                      <button
-                        type="button"
-                        onClick={addParticipant}
-                        className="px-3 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
-                      >
-                        Add
-                      </button>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={newParticipant.color}
+                          onChange={(e) => setNewParticipant(prev => ({ ...prev, color: e.target.value }))}
+                          className="w-12 h-10 rounded border border-gray-300 dark:border-gray-600"
+                        />
+                        <button
+                          type="button"
+                          onClick={addParticipant}
+                          className="px-3 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
+                        >
+                          Add
+                        </button>
+                      </div>
                     </div>
 
                     {/* Participants List */}
@@ -307,19 +311,19 @@ function TemplatesPage() {
                           key={index}
                           className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded"
                         >
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-2 min-w-0 flex-1">
                             <div
-                              className="w-4 h-4 rounded-full"
+                              className="w-4 h-4 rounded-full flex-shrink-0"
                               style={{ backgroundColor: participant.color }}
                             />
-                            <span className="text-sm text-gray-900 dark:text-white">
+                            <span className="text-sm text-gray-900 dark:text-white truncate">
                               {participant.name}
                             </span>
                           </div>
                           <button
                             type="button"
                             onClick={() => removeParticipant(index)}
-                            className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                            className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 ml-2 flex-shrink-0"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -328,7 +332,7 @@ function TemplatesPage() {
                     </div>
                   </div>
 
-                  <div className="flex space-x-3 pt-4">
+                  <div className="flex flex-col sm:flex-row gap-3 pt-4">
                     <button
                       type="button"
                       onClick={() => {
@@ -336,13 +340,13 @@ function TemplatesPage() {
                         setEditingTemplate(null);
                         resetForm();
                       }}
-                      className="btn-secondary flex-1"
+                      className="btn-secondary order-2 sm:order-1"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="btn-primary flex-1"
+                      className="btn-primary order-1 sm:order-2"
                     >
                       {editingTemplate ? 'Update Template' : 'Create Template'}
                     </button>

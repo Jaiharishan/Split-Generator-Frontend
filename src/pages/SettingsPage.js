@@ -64,24 +64,24 @@ function SettingsPage() {
         return (
           <div className="space-y-6">
             {/* Profile Info */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Profile Information</h3>
-              <div className="flex items-center space-x-4 mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
                 {user?.avatar_url ? (
-                  <img src={user.avatar_url} alt={user.name} className="h-16 w-16 rounded-full" />
+                  <img src={user.avatar_url} alt={user.name} className="h-16 w-16 rounded-full mx-auto sm:mx-0" />
                 ) : (
-                  <div className="h-16 w-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
+                  <div className="h-16 w-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mx-auto sm:mx-0">
                     <User className="h-8 w-8 text-primary-600 dark:text-primary-400" />
                   </div>
                 )}
-                <div>
-                  <div className="flex items-center space-x-2">
+                <div className="text-center sm:text-left">
+                  <div className="flex items-center justify-center sm:justify-start space-x-2">
                     <span className="text-xl font-semibold text-gray-900 dark:text-white">{user?.name}</span>
                     {isPremium && (
                       <Crown className="h-5 w-5 text-yellow-500" />
                     )}
                   </div>
-                  <div className="flex items-center space-x-2 mt-1">
+                  <div className="flex items-center justify-center sm:justify-start space-x-2 mt-1">
                     <Mail className="h-4 w-4 text-gray-400" />
                     <span className="text-gray-600 dark:text-gray-300">{user?.email}</span>
                   </div>
@@ -93,16 +93,16 @@ function SettingsPage() {
             </div>
 
             {/* Theme Toggle */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Appearance</h3>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   <p className="text-gray-700 dark:text-gray-300">Theme</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Choose your preferred theme</p>
                 </div>
                 <button
                   onClick={toggleTheme}
-                  className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-600 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-500 transition-colors"
+                  className="flex items-center justify-center px-4 py-2 bg-gray-100 dark:bg-gray-600 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-500 transition-colors w-full sm:w-auto"
                 >
                   {theme === 'dark' ? <Sun className="h-5 w-5 mr-2" /> : <Moon className="h-5 w-5 mr-2" />}
                   {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
@@ -111,12 +111,12 @@ function SettingsPage() {
             </div>
 
             {/* Change Password */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Security</h3>
               {!showPasswordForm ? (
                 <button
                   onClick={() => setShowPasswordForm(true)}
-                  className="btn-secondary"
+                  className="btn-secondary w-full sm:w-auto"
                 >
                   <Lock className="h-4 w-4 mr-2" />
                   Change Password
@@ -158,7 +158,7 @@ function SettingsPage() {
                   </div>
                   {error && <div className="text-red-600 dark:text-red-400 text-sm">{error}</div>}
                   {message && <div className="text-green-600 dark:text-green-400 text-sm">{message}</div>}
-                  <div className="flex space-x-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <button
                       type="button"
                       onClick={() => {
@@ -167,14 +167,14 @@ function SettingsPage() {
                         setError(null);
                         setMessage(null);
                       }}
-                      className="btn-secondary flex-1"
+                      className="btn-secondary order-2 sm:order-1"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={loading}
-                      className="btn-primary flex-1"
+                      className="btn-primary order-1 sm:order-2"
                     >
                       {loading ? (
                         <>
@@ -194,7 +194,7 @@ function SettingsPage() {
             </div>
 
             {/* Account Actions */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Account Actions</h3>
               <div className="space-y-3">
                 <button
@@ -213,7 +213,7 @@ function SettingsPage() {
         return (
           <div className="space-y-6">
             {/* Current Status */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Premium Status</h3>
                 {isPremium && <Crown className="h-6 w-6 text-yellow-500" />}
@@ -291,7 +291,7 @@ function SettingsPage() {
             </div>
 
             {/* Premium Features */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Premium Features</h3>
               <div className="space-y-3">
                 <div className="flex items-center">
@@ -314,7 +314,7 @@ function SettingsPage() {
             </div>
 
             {/* Premium Actions */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Manage Subscription</h3>
               {isPremium ? (
                 <div className="space-y-3">
@@ -361,21 +361,21 @@ function SettingsPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Settings</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">Settings</h1>
           <p className="text-gray-600 dark:text-gray-400">Manage your account preferences and settings</p>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
           {/* Tabs */}
           <div className="border-b border-gray-200 dark:border-gray-700">
-            <nav className="flex space-x-8 px-6" aria-label="Tabs">
+            <nav className="flex space-x-4 sm:space-x-8 px-4 sm:px-6 overflow-x-auto" aria-label="Tabs">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    className={`flex items-center py-4 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${
                       activeTab === tab.id
                         ? 'border-primary-500 text-primary-600 dark:text-primary-400'
                         : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
@@ -390,7 +390,7 @@ function SettingsPage() {
           </div>
 
           {/* Tab Content */}
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {renderTabContent()}
           </div>
         </div>

@@ -125,9 +125,9 @@ function BillDetailPage() {
             Back to Bills
           </button>
           
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{bill.title}</h1>
+              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">{bill.title}</h1>
               {bill.description && (
                 <p className="text-gray-600 dark:text-gray-300 mb-2">{bill.description}</p>
               )}
@@ -136,25 +136,25 @@ function BillDetailPage() {
               </p>
             </div>
             
-            <div className="flex items-center space-x-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
               <button
                 onClick={handleExport}
                 disabled={exporting}
-                className="btn-secondary"
+                className="btn-secondary flex items-center justify-center"
               >
                 <Download className="h-4 w-4 mr-2" />
                 {exporting ? 'Exporting...' : 'Export'}
               </button>
               <button
                 onClick={() => navigate(`/bill/${id}/edit`)}
-                className="btn-secondary"
+                className="btn-secondary flex items-center justify-center"
               >
                 <Edit className="h-4 w-4 mr-2" />
                 Edit
               </button>
               <button
                 onClick={handleDeleteBill}
-                className="btn-danger"
+                className="btn-danger flex items-center justify-center"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete
@@ -163,7 +163,7 @@ function BillDetailPage() {
           </div>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-6 lg:gap-8 lg:grid-cols-3">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Participants */}
@@ -204,8 +204,8 @@ function BillDetailPage() {
                   <div className="space-y-4">
                     {bill.products?.map((product, index) => (
                       <div key={product.id || index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <h3 className="font-medium text-gray-900 dark:text-white">{product.name}</h3>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+                          <h3 className="font-medium text-gray-900 dark:text-white break-words">{product.name}</h3>
                           <span className="text-lg font-semibold text-gray-900 dark:text-white">
                             ${(product.price || 0).toFixed(2)}
                           </span>
@@ -280,8 +280,8 @@ function BillDetailPage() {
                   <div className="space-y-3">
                     {summary.participants.map((participant) => (
                       <div key={participant.id} className="flex justify-between items-center">
-                        <span className="text-gray-700 dark:text-gray-300">{participant.name}:</span>
-                        <span className="font-semibold text-gray-900 dark:text-white">
+                        <span className="text-gray-700 dark:text-gray-300 break-words">{participant.name}:</span>
+                        <span className="font-semibold text-gray-900 dark:text-white ml-2">
                           ${(participant.total_amount || 0).toFixed(2)}
                         </span>
                       </div>

@@ -287,14 +287,14 @@ function CreateBillPage() {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Create New Bill</h1>
+              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">Create New Bill</h1>
               <p className="text-gray-600 dark:text-gray-300">Upload a receipt or manually add items to split with friends</p>
             </div>
             <div>
               <button
                 type="button"
                 onClick={openTemplateModal}
-                className="btn-secondary flex items-center"
+                className="btn-secondary flex items-center w-full sm:w-auto justify-center"
               >
                 <FileText className="h-5 w-5 mr-2" />
                 {template ? 'Change Template' : 'Choose Template'}
@@ -416,7 +416,7 @@ function CreateBillPage() {
           <ReceiptParser onProductsExtracted={handleProductsExtracted} />
 
           {/* Participants Section */}
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid gap-8 lg:grid-cols-2">
             {/* Participants Input */}
             <div className="card">
               <div className="card-header">
@@ -478,13 +478,13 @@ function CreateBillPage() {
                   <div className="space-y-4">
                     {validParticipants.map((participant, index) => (
                       <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
+                        <div className="flex items-center space-x-3 min-w-0 flex-1">
+                          <div className="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center flex-shrink-0">
                             <User className="h-4 w-4 text-primary-600 dark:text-primary-400" />
                           </div>
-                          <span className="font-medium text-gray-900 dark:text-white">{participant}</span>
+                          <span className="font-medium text-gray-900 dark:text-white truncate">{participant}</span>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right flex-shrink-0 ml-2">
                           <div className="text-lg font-bold text-gray-900 dark:text-white">
                             ${participantTotals[participant]?.toFixed(2) || '0.00'}
                           </div>
@@ -546,7 +546,7 @@ function CreateBillPage() {
                 <div className="space-y-4">
                   {formData.products.map((product, productIndex) => (
                     <div key={productIndex} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-                      <div className="flex items-center space-x-3 mb-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 mb-3">
                         <input
                           type="text"
                           value={product.name}
@@ -558,7 +558,7 @@ function CreateBillPage() {
                           type="number"
                           value={product.price}
                           onChange={(e) => updateProduct(productIndex, 'price', parseFloat(e.target.value) || 0)}
-                          className="input w-24"
+                          className="input w-full sm:w-24"
                           placeholder="Price"
                           step="0.01"
                           min="0"
@@ -566,7 +566,7 @@ function CreateBillPage() {
                         <button
                           type="button"
                           onClick={() => removeProduct(productIndex)}
-                          className="text-danger-600 hover:text-danger-700 dark:text-danger-400 dark:hover:text-danger-300 p-2 hover:bg-danger-50 dark:hover:bg-danger-900/20 rounded-full transition-colors"
+                          className="text-danger-600 hover:text-danger-700 dark:text-danger-400 dark:hover:text-danger-300 p-2 hover:bg-danger-50 dark:hover:bg-danger-900/20 rounded-full transition-colors self-start sm:self-auto"
                         >
                           <X className="h-5 w-5" />
                         </button>
@@ -615,18 +615,18 @@ function CreateBillPage() {
           </div>
 
           {/* Submit */}
-          <div className="flex justify-end space-x-4">
+          <div className="flex flex-col sm:flex-row justify-end gap-3 sm:space-x-4">
             <button
               type="button"
               onClick={() => navigate('/bills')}
-              className="btn-secondary"
+              className="btn-secondary order-2 sm:order-1"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary"
+              className="btn-primary order-1 sm:order-2"
             >
               {loading ? (
                 <>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Receipt, Moon, Sun, User, LogOut, Settings, ChevronDown, Crown } from 'lucide-react';
+import { Receipt, Moon, Sun, User, LogOut, Settings, ChevronDown, Crown, Menu, X } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { usePremium } from '../contexts/PremiumContext';
@@ -12,14 +12,26 @@ function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const handleLogout = async () => {
     await logout();
     navigate('/');
+    setShowMobileMenu(false);
+    setShowProfileMenu(false);
   };
 
   const toggleProfileMenu = () => {
     setShowProfileMenu(!showProfileMenu);
+  };
+
+  const toggleMobileMenu = () => {
+    setShowMobileMenu(!showMobileMenu);
+    setShowProfileMenu(false);
+  };
+
+  const closeMobileMenu = () => {
+    setShowMobileMenu(false);
   };
 
   // Show simplified header on landing page for unauthenticated users
@@ -66,7 +78,7 @@ function Header() {
   }
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+    <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Navigation */}
@@ -196,23 +208,125 @@ function Header() {
                 Sign In
               </Link>
             )}
+
+            {/* Mobile menu button */}
+            {user && (
+              <button
+                onClick={toggleMobileMenu}
+                className="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                aria-label="Toggle mobile menu"
+              >
+                {showMobileMenu ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Mobile menu button */}
-      <div className="md:hidden">
-        <button
-          onClick={() => {
-            // Add mobile menu functionality
-          }}
-          className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white p-2"
-        >
-          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </div>
+      {/* Mobile menu */}
+      {showMobileMenu && user && (
+        <div className="md:hidden fixed inset-0 z-50">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black bg-opacity-25"
+            onClick={closeMobileMenu}
+          />
+          
+          {/* Menu content */}
+          <div className="absolute top-16 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg">
+            <div className="px-4 py-2 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
+              {/* User info */}
+              <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center space-x-3">
+                  {user.avatar_url ? (
+                    <img
+                      src={user.avatar_url}
+                      alt={user.name}
+                      className="h-10 w-10 rounded-full"
+                    />
+                  ) : (
+                    <div className="h-10 w-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
+                      <User className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation links */}
+              <Link
+                to="/bills"
+                onClick={closeMobileMenu}
+                className="flex items-center px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              >
+                Bills
+              </Link>
+              <Link
+                to="/create"
+                onClick={closeMobileMenu}
+                className="flex items-center px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              >
+                Create Bill
+              </Link>
+              <Link
+                to="/templates"
+                onClick={closeMobileMenu}
+                className="flex items-center px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              >
+                Templates
+              </Link>
+              <Link
+                to="/premium"
+                onClick={closeMobileMenu}
+                className="flex items-center px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              >
+                Premium
+              </Link>
+
+              {/* Divider */}
+              <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+
+              {/* User actions */}
+              <button
+                onClick={() => {
+                  closeMobileMenu();
+                  navigate('/settings');
+                }}
+                className="flex items-center w-full px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              >
+                <Settings className="h-5 w-5 mr-3" />
+                Settings
+              </button>
+              
+              <button
+                onClick={() => {
+                  closeMobileMenu();
+                  navigate('/premium');
+                }}
+                className="flex items-center w-full px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              >
+                <Crown className="h-5 w-5 mr-3" />
+                {isPremium ? 'Premium Settings' : 'Upgrade to Premium'}
+              </button>
+              
+              <button
+                onClick={handleLogout}
+                className="flex items-center w-full px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              >
+                <LogOut className="h-5 w-5 mr-3" />
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

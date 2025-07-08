@@ -39,32 +39,34 @@ function PremiumPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center mb-4">
-            <div className="p-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg mr-4">
-              <Crown className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Premium Settings
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300">
-                Manage your subscription and usage
-              </p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex items-center">
+              <div className="p-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg mr-4">
+                <Crown className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
+                  Premium Settings
+                </h1>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Manage your subscription and usage
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Current Plan */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <div className="flex items-center justify-between mb-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                   Current Plan
                 </h2>
                 {isPremium && (
-                  <span className="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 rounded-full text-sm font-medium">
+                  <span className="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 rounded-full text-sm font-medium self-start sm:self-auto">
                     Premium
                   </span>
                 )}
@@ -73,7 +75,7 @@ function PremiumPage() {
               {isPremium ? (
                 <div className="space-y-4">
                   <div className="flex items-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
                     <div>
                       <h3 className="font-medium text-green-900 dark:text-green-100">
                         Premium Active
@@ -84,7 +86,7 @@ function PremiumPage() {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid gap-4 md:grid-cols-2">
                     <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
                       <h4 className="font-medium text-gray-900 dark:text-white mb-2">
                         Plan Details
@@ -107,10 +109,10 @@ function PremiumPage() {
                     </div>
                   </div>
 
-                  <div className="flex space-x-4">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:space-x-4">
                     <button
                       onClick={() => setShowPlans(true)}
-                      className="btn-secondary flex items-center"
+                      className="btn-secondary flex items-center justify-center"
                     >
                       <Settings className="h-4 w-4 mr-2" />
                       Change Plan
@@ -126,7 +128,7 @@ function PremiumPage() {
               ) : (
                 <div className="space-y-4">
                   <div className="flex items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <AlertTriangle className="h-5 w-5 text-blue-500 mr-3" />
+                    <AlertTriangle className="h-5 w-5 text-blue-500 mr-3 flex-shrink-0" />
                     <div>
                       <h3 className="font-medium text-blue-900 dark:text-blue-100">
                         Free Plan
@@ -139,7 +141,7 @@ function PremiumPage() {
 
                   <button
                     onClick={() => setShowPlans(true)}
-                    className="btn-primary flex items-center"
+                    className="btn-primary flex items-center justify-center w-full sm:w-auto"
                   >
                     <Zap className="h-4 w-4 mr-2" />
                     Upgrade to Premium
@@ -155,7 +157,7 @@ function PremiumPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Premium Features */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Premium Features
               </h3>
@@ -170,8 +172,8 @@ function PremiumPage() {
                   'Multiple export formats',
                   'Priority support'
                 ].map((feature, index) => (
-                  <div key={index} className="flex items-center">
-                    <CheckCircle className={`h-4 w-4 mr-3 ${
+                  <div key={index} className="flex items-start">
+                    <CheckCircle className={`h-4 w-4 mr-3 mt-0.5 flex-shrink-0 ${
                       isPremium ? 'text-green-500' : 'text-gray-300'
                     }`} />
                     <span className={`text-sm ${
@@ -185,7 +187,7 @@ function PremiumPage() {
             </div>
 
             {/* Support */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Need Help?
               </h3>
@@ -221,16 +223,16 @@ function PremiumPage() {
               <p className="text-gray-600 dark:text-gray-300 mb-6">
                 Are you sure you want to cancel your premium subscription? You'll lose access to premium features at the end of your current billing period.
               </p>
-              <div className="flex space-x-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:space-x-4">
                 <button
                   onClick={() => setShowCancelConfirm(false)}
-                  className="btn-secondary flex-1"
+                  className="btn-secondary order-2 sm:order-1"
                 >
                   Keep Subscription
                 </button>
                 <button
                   onClick={handleCancelSubscription}
-                  className="btn-outline text-red-600 border-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-900/20 flex-1"
+                  className="btn-outline text-red-600 border-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-900/20 order-1 sm:order-2"
                 >
                   Cancel Subscription
                 </button>
