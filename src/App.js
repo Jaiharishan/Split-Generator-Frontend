@@ -55,6 +55,12 @@ function App() {
                     </ProtectedRoute>
                   } />
                   
+                  <Route path="/bill/:id/edit" element={
+                    <ProtectedRoute>
+                      <CreateBillPage />
+                    </ProtectedRoute>
+                  } />
+                  
                   <Route path="/templates" element={
                     <ProtectedRoute>
                       <TemplatesPage />

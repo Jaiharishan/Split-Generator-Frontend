@@ -41,7 +41,8 @@ function BillDetailPage() {
 
     try {
       await billService.deleteBill(id);
-      navigate('/');
+      alert('Bill deleted successfully');
+      navigate('/bills');
     } catch (error) {
       console.error('Error deleting bill:', error);
       alert('Failed to delete bill. Please try again.');
@@ -55,7 +56,6 @@ function BillDetailPage() {
       const result = await exportService.exportBillAsText(id, filename);
       
       if (result.success) {
-        // Show success message
         alert('Bill exported successfully!');
       } else {
         alert('Failed to export bill: ' + result.error);
@@ -63,6 +63,25 @@ function BillDetailPage() {
     } catch (error) {
       console.error('Export error:', error);
       alert('Failed to export bill. Please try again.');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleExportCSV = async () => {
+    try {
+      setExporting(true);
+      const filename = `${bill.title.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+      const result = await exportService.exportBillAsCSV(id, filename);
+      
+      if (result.success) {
+        alert('Bill exported as CSV successfully!');
+      } else {
+        alert('Failed to export CSV: ' + result.error);
+      }
+    } catch (error) {
+      console.error('CSV Export error:', error);
+      alert('Failed to export CSV. Please try again.');
     } finally {
       setExporting(false);
     }
@@ -144,6 +163,14 @@ function BillDetailPage() {
               >
                 <Download className="h-4 w-4 mr-2" />
                 {exporting ? 'Exporting...' : 'Export'}
+              </button>
+              <button
+                onClick={handleExportCSV}
+                disabled={exporting}
+                className="btn-secondary flex items-center justify-center"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                {exporting ? 'Exporting...' : 'Export CSV'}
               </button>
               <button
                 onClick={() => navigate(`/bill/${id}/edit`)}

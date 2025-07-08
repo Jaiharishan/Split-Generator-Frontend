@@ -99,8 +99,53 @@ export const exportService = {
       return { success: true };
     } catch (error) {
       console.error('Export error:', error);
+      let errorMessage = 'Failed to export bill';
+      
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Export bill as CSV
+  async exportBillAsCSV(billId, filename) {
+    try {
+      const exportData = await this.exportBill(billId);
+      const csvContent = this.formatBillForCSV(exportData);
+      this.downloadAsText(csvContent, filename || `bill-${billId}.csv`);
+      return { success: true };
+    } catch (error) {
+      console.error('CSV Export error:', error);
       return { success: false, error: error.message };
     }
+  },
+
+  // Format bill data for CSV export
+  formatBillForCSV(data) {
+    const { bill, participants, products, summary } = data;
+    
+    let csv = 'Bill Title,Date,Total Amount,Description\n';
+    csv += `"${bill.title}","${bill.created_at}","${bill.total_amount}","${bill.description || ''}"\n\n`;
+    
+    csv += 'Participant Name,Total Owed\n';
+    participants.forEach(participant => {
+      csv += `"${participant.name}","${participant.total_owed}"\n`;
+    });
+    csv += '\n';
+    
+    csv += 'Product Name,Price,Quantity,Total Cost,Shared By\n';
+    products.forEach(product => {
+      const sharedBy = product.participants.length > 0 
+        ? product.participants.map(p => p.name).join('; ')
+        : 'Not assigned';
+      csv += `"${product.name}","${product.price}","${product.quantity}","${product.total_cost}","${sharedBy}"\n`;
+    });
+    
+    return csv;
   }
 };
 

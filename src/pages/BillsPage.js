@@ -18,11 +18,20 @@ function BillsPage() {
   const fetchBills = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await billService.getAllBills();
       setBills(data);
     } catch (err) {
-      setError('Failed to fetch bills');
       console.error('Error fetching bills:', err);
+      let errorMessage = 'Failed to fetch bills';
+      
+      if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Plus, X, Save, Trash2, User, Users, DollarSign, FileText, ChevronDown, Check } from 'lucide-react';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
+import { Plus, X, Save, Trash2, User, Users, DollarSign, FileText, ChevronDown, Check, ArrowLeft } from 'lucide-react';
 import { billService } from '../services/billService';
 import { templateService } from '../services/templateService';
 import ReceiptParser from '../components/ReceiptParser';
@@ -8,7 +8,9 @@ import ReceiptParser from '../components/ReceiptParser';
 function CreateBillPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { id } = useParams(); // Get bill ID if editing
   const [loading, setLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -28,6 +30,38 @@ function CreateBillPage() {
       loadTemplate(templateId);
     }
   }, [searchParams]);
+
+  // Load bill data if editing
+  useEffect(() => {
+    if (id) {
+      setIsEditMode(true);
+      loadBillForEditing();
+    }
+  }, [id]);
+
+  const loadBillForEditing = async () => {
+    try {
+      setLoading(true);
+      const billData = await billService.getBillById(id);
+      
+      setFormData({
+        title: billData.title || '',
+        description: billData.description || '',
+        participants: billData.participants?.map(p => p.name) || [''],
+        products: billData.products?.map(p => ({
+          name: p.name,
+          price: p.price,
+          participants: p.participants?.map(pp => pp.name) || []
+        })) || []
+      });
+    } catch (error) {
+      console.error('Error loading bill for editing:', error);
+      alert('Failed to load bill for editing');
+      navigate('/bills');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fetch templates for modal
   const fetchTemplates = async () => {
@@ -167,6 +201,12 @@ function CreateBillPage() {
       ...newProducts[index],
       [field]: value
     };
+    
+    // Ensure participants array exists
+    if (!newProducts[index].participants) {
+      newProducts[index].participants = [];
+    }
+    
     setFormData(prev => ({
       ...prev,
       products: newProducts
@@ -184,6 +224,11 @@ function CreateBillPage() {
     const newProducts = [...formData.products];
     const product = newProducts[productIndex];
     const participant = formData.participants[participantIndex];
+    
+    // Ensure product.participants is an array
+    if (!product.participants) {
+      product.participants = [];
+    }
     
     if (product.participants.includes(participant)) {
       product.participants = product.participants.filter(p => p !== participant);
@@ -216,57 +261,78 @@ function CreateBillPage() {
       // Calculate total amount from products
       const totalAmount = formData.products.reduce((sum, product) => sum + (product.price || 0), 0);
       
-      // Prepare data in the format expected by the server
-      const billData = {
-        title: formData.title.trim(),
-        total_amount: totalAmount,
-        participants: formData.participants.filter(p => p.trim())
-      };
+      if (isEditMode) {
+        // Update existing bill
+        const updateData = {
+          title: formData.title.trim(),
+          total_amount: totalAmount,
+          description: formData.description.trim()
+        };
 
-      console.log('Creating bill with data:', billData);
-      
-      const newBill = await billService.createBill(billData);
-      console.log('Bill created successfully:', newBill);
-      
-      // If there are products, we need to add them after bill creation
-      const validProducts = formData.products.filter(p => p.name.trim() && p.price > 0);
-      
-      if (validProducts.length > 0) {
-        // Get the created bill to get participant IDs
-        const createdBill = await billService.getBillById(newBill.id);
+        await billService.updateBill(id, updateData);
+        alert('Bill updated successfully!');
+        navigate(`/bill/${id}`);
+      } else {
+        // Create new bill
+        const billData = {
+          title: formData.title.trim(),
+          total_amount: totalAmount,
+          participants: formData.participants.filter(p => p.trim())
+        };
+
+        console.log('Creating bill with data:', billData);
         
-        // Add each product to the bill
-        for (const product of validProducts) {
-          const productData = {
-            name: product.name.trim(),
-            price: product.price,
-            quantity: 1,
-            participant_ids: [] // We'll need to map participant names to IDs
-          };
-          
-          // Map participant names to IDs for this product
-          if (product.participants && product.participants.length > 0) {
-            const participantIds = [];
-            for (const participantName of product.participants) {
-              const participant = createdBill.participants.find(p => p.name === participantName);
-              if (participant) {
-                participantIds.push(participant.id);
+        const newBill = await billService.createBill(billData);
+        console.log('Bill created successfully:', newBill);
+        
+        // If there are products, we need to add them after bill creation
+        const validProducts = formData.products.filter(p => p.name.trim() && p.price > 0);
+        
+        if (validProducts.length > 0) {
+          try {
+            // Get the created bill to get participant IDs
+            const createdBill = await billService.getBillById(newBill.id);
+            
+            // Add each product to the bill
+            for (const product of validProducts) {
+              const productData = {
+                name: product.name.trim(),
+                price: product.price,
+                quantity: 1,
+                participant_ids: []
+              };
+              
+              // Map participant names to IDs for this product
+              if (product.participants && product.participants.length > 0) {
+                const participantIds = [];
+                for (const participantName of product.participants) {
+                  const participant = createdBill.participants.find(p => p.name === participantName);
+                  if (participant) {
+                    participantIds.push(participant.id);
+                  }
+                }
+                productData.participant_ids = participantIds;
               }
+              
+              await billService.addProduct(newBill.id, productData);
             }
-            productData.participant_ids = participantIds;
+          } catch (productError) {
+            console.error('Error adding products:', productError);
+            alert('Bill created but there was an issue adding some products. You can add them manually.');
           }
-          
-          await billService.addProduct(newBill.id, productData);
         }
+        
+        alert('Bill created successfully!');
+        navigate(`/bill/${newBill.id}`);
       }
-      
-      navigate(`/bill/${newBill.id}`);
     } catch (error) {
-      console.error('Error creating bill:', error);
-      let errorMessage = 'Failed to create bill. Please try again.';
+      console.error('Error saving bill:', error);
+      let errorMessage = isEditMode ? 'Failed to update bill' : 'Failed to create bill';
       
       if (error.response?.data?.error) {
         errorMessage = error.response.data.error;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
       } else if (error.message) {
         errorMessage = error.message;
       }
@@ -285,10 +351,23 @@ function CreateBillPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
+          {isEditMode && (
+            <button
+              onClick={() => navigate(`/bill/${id}`)}
+              className="flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white mb-4"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Bill
+            </button>
+          )}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
             <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">Create New Bill</h1>
-              <p className="text-gray-600 dark:text-gray-300">Upload a receipt or manually add items to split with friends</p>
+              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                {isEditMode ? 'Edit Bill' : 'Create New Bill'}
+              </h1>
+              <p className="text-gray-600 dark:text-gray-300">
+                {isEditMode ? 'Update your bill details and assignments' : 'Upload a receipt or manually add items to split with friends'}
+              </p>
             </div>
             <div>
               <button
@@ -631,12 +710,12 @@ function CreateBillPage() {
               {loading ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Creating...
+                  {isEditMode ? 'Updating...' : 'Creating...'}
                 </>
               ) : (
                 <>
                   <Save className="h-4 w-4 mr-2" />
-                  Create Bill
+                  {isEditMode ? 'Update Bill' : 'Create Bill'}
                 </>
               )}
             </button>
