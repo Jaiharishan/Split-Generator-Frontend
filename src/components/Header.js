@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Receipt, Moon, Sun, User, LogOut, Settings, ChevronDown } from 'lucide-react';
+import { Receipt, Moon, Sun, User, LogOut, Settings, ChevronDown, Crown } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
+import { usePremium } from '../contexts/PremiumContext';
 
 function Header() {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
+  const { isPremium } = usePremium();
   const navigate = useNavigate();
   const location = useLocation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -96,6 +98,12 @@ function Header() {
                 >
                   Templates
                 </Link>
+                <Link
+                  to="/premium"
+                  className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Premium
+                </Link>
               </nav>
             )}
           </div>
@@ -154,6 +162,17 @@ function Header() {
                     >
                       <Settings className="h-4 w-4 mr-2" />
                       Settings
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        setShowProfileMenu(false);
+                        navigate('/premium');
+                      }}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      <Crown className="h-4 w-4 mr-2" />
+                      {isPremium ? 'Premium Settings' : 'Upgrade to Premium'}
                     </button>
                     
                     <button
