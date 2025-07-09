@@ -14,6 +14,7 @@ import SettingsPage from './pages/SettingsPage';
 import PremiumPage from './pages/PremiumPage';
 import LoginPage from './pages/LoginPage';
 import ApiTestPage from './pages/ApiTestPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import './index.css';
 
 function App() {
@@ -82,6 +83,12 @@ function App() {
                   <Route path="/api-test" element={
                     <ProtectedRoute>
                       <ApiTestPage />
+                    </ProtectedRoute>
+                  } />
+
+                  <Route path="/analytics" element={
+                    <ProtectedRoute>
+                      <AnalyticsPage />
                     </ProtectedRoute>
                   } />
                   

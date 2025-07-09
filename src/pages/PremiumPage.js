@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Crown, Settings, CreditCard, Zap, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Crown, Settings, CreditCard, Zap, CheckCircle, AlertTriangle, Users, FileText, FilePlus, FileCheck, BarChart2, Download, Star, LifeBuoy } from 'lucide-react';
 import { usePremium } from '../contexts/PremiumContext';
 import UsageLimits from '../components/UsageLimits';
 import PremiumPlans from '../components/PremiumPlans';
 import { useLocation } from 'react-router-dom';
+import confetti from 'canvas-confetti';
 
 function PremiumPage() {
   const { premiumStatus, isPremium, cancelPremium, loading } = usePremium();
@@ -20,6 +21,28 @@ function PremiumPage() {
       window.history.replaceState({}, document.title, location.pathname);
     }
   }, [isPremium, location]);
+
+  // Confetti animation when congrats modal is shown
+  useEffect(() => {
+    if (showCongrats) {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#facc15', '#fbbf24', '#fde68a', '#34d399', '#60a5fa'],
+        scalar: 1.1,
+      });
+      setTimeout(() => {
+        confetti({
+          particleCount: 40,
+          spread: 100,
+          origin: { y: 0.4 },
+          colors: ['#facc15', '#fbbf24', '#fde68a', '#34d399', '#60a5fa'],
+          scalar: 0.8,
+        });
+      }, 400);
+    }
+  }, [showCongrats]);
 
   const handleCancelSubscription = async () => {
     try {
@@ -54,11 +77,11 @@ function PremiumPage() {
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-8 shadow-xl text-center">
             <div className="flex justify-center mb-4">
               <span className="p-3 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full">
-                <Crown className="h-10 w-10 text-white" />
+                <Crown className="h-10 w-10 text-white animate-bounce" />
               </span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome to Premium!</h2>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">You’re now a Premium user. Enjoy your new features:</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome to Premium! 🎉</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">Thank you for upgrading! You now have access to all advanced features and unlimited usage. Enjoy your premium experience!</p>
             <ul className="text-left space-y-2 mb-4">
               {[
                 'Unlimited bills per month',
@@ -174,7 +197,7 @@ function PremiumPage() {
                     </button>
                     <button
                       onClick={() => setShowCancelConfirm(true)}
-                      className="btn-outline text-red-600 border-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-900/20"
+                      className="flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-red-400 transition-all border-0"
                     >
                       Cancel Subscription
                     </button>
@@ -217,23 +240,63 @@ function PremiumPage() {
                 Premium Features
               </h3>
               <div className="space-y-3">
-                {[
-                  'Unlimited bills per month',
-                  'Unlimited participants per bill',
-                  'Unlimited templates',
-                  'PDF receipt support',
-                  'Receipt storage',
-                  'Advanced analytics',
-                  'Multiple export formats',
-                  'Priority support'
-                ].map((feature, index) => (
-                  <div key={index} className={`flex items-start rounded-lg px-2 py-1 ${isPremium ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
-                    <CheckCircle className={`h-4 w-4 mr-3 mt-0.5 flex-shrink-0 ${isPremium ? 'text-green-500' : 'text-gray-300'}`} />
-                    <span className={`text-sm ${isPremium ? 'text-green-800 dark:text-green-200 font-semibold' : 'text-gray-400'}`}>
-                      {feature}
-                    </span>
+                {/* Enhanced feature list with icons and descriptions */}
+                <div className={`flex items-start rounded-lg px-2 py-2 ${isPremium ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
+                  <FilePlus className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${isPremium ? 'text-green-500' : 'text-gray-400'}`} />
+                  <div>
+                    <span className={`text-sm ${isPremium ? 'text-green-800 dark:text-green-200 font-semibold' : 'text-gray-400'}`}>Unlimited bills per month</span>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Create as many bills as you need, every month.</div>
                   </div>
-                ))}
+                </div>
+                <div className={`flex items-start rounded-lg px-2 py-2 ${isPremium ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
+                  <Users className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${isPremium ? 'text-green-500' : 'text-gray-400'}`} />
+                  <div>
+                    <span className={`text-sm ${isPremium ? 'text-green-800 dark:text-green-200 font-semibold' : 'text-gray-400'}`}>Unlimited participants per bill</span>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Split with as many people as you want.</div>
+                  </div>
+                </div>
+                <div className={`flex items-start rounded-lg px-2 py-2 ${isPremium ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
+                  <FileText className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${isPremium ? 'text-green-500' : 'text-gray-400'}`} />
+                  <div>
+                    <span className={`text-sm ${isPremium ? 'text-green-800 dark:text-green-200 font-semibold' : 'text-gray-400'}`}>Unlimited templates</span>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Save and reuse as many bill templates as you need.</div>
+                  </div>
+                </div>
+                <div className={`flex items-start rounded-lg px-2 py-2 ${isPremium ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
+                  <FileCheck className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${isPremium ? 'text-green-500' : 'text-gray-400'}`} />
+                  <div>
+                    <span className={`text-sm ${isPremium ? 'text-green-800 dark:text-green-200 font-semibold' : 'text-gray-400'}`}>PDF receipt support</span>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Upload and process PDF receipts, not just images.</div>
+                  </div>
+                </div>
+                <div className={`flex items-start rounded-lg px-2 py-2 ${isPremium ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
+                  <Star className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${isPremium ? 'text-green-500' : 'text-gray-400'}`} />
+                  <div>
+                    <span className={`text-sm ${isPremium ? 'text-green-800 dark:text-green-200 font-semibold' : 'text-gray-400'}`}>Receipt storage</span>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Keep a history of all your uploaded receipts.</div>
+                  </div>
+                </div>
+                <div className={`flex items-start rounded-lg px-2 py-2 ${isPremium ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
+                  <BarChart2 className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${isPremium ? 'text-green-500' : 'text-gray-400'}`} />
+                  <div>
+                    <span className={`text-sm ${isPremium ? 'text-green-800 dark:text-green-200 font-semibold' : 'text-gray-400'}`}>Advanced analytics</span>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Get insights and breakdowns of your spending.</div>
+                  </div>
+                </div>
+                <div className={`flex items-start rounded-lg px-2 py-2 ${isPremium ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
+                  <Download className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${isPremium ? 'text-green-500' : 'text-gray-400'}`} />
+                  <div>
+                    <span className={`text-sm ${isPremium ? 'text-green-800 dark:text-green-200 font-semibold' : 'text-gray-400'}`}>Multiple export formats</span>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Export your bills as PDF, CSV, and more.</div>
+                  </div>
+                </div>
+                <div className={`flex items-start rounded-lg px-2 py-2 ${isPremium ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
+                  <LifeBuoy className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${isPremium ? 'text-green-500' : 'text-gray-400'}`} />
+                  <div>
+                    <span className={`text-sm ${isPremium ? 'text-green-800 dark:text-green-200 font-semibold' : 'text-gray-400'}`}>Priority support</span>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Get faster responses and help when you need it.</div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -255,9 +318,24 @@ function PremiumPage() {
 
       {/* Premium Plans Modal */}
       {showPlans && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+          onClick={e => {
+            // Only close if clicking the backdrop, not the modal itself
+            if (e.target === e.currentTarget) setShowPlans(false);
+          }}
+        >
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto relative shadow-xl">
             <PremiumPlans onClose={() => setShowPlans(false)} />
+            {/* Improved close button for visibility */}
+            <button
+              onClick={() => setShowPlans(false)}
+              className="absolute top-4 right-4 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-full p-2 shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-400 z-10 text-2xl font-bold"
+              aria-label="Close"
+              tabIndex={0}
+            >
+              ×
+            </button>
           </div>
         </div>
       )}
@@ -265,27 +343,37 @@ function PremiumPage() {
       {/* Cancel Confirmation Modal */}
       {showCancelConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full shadow-xl border border-red-200 dark:border-red-700">
             <div className="text-center">
-              <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+              <div className="flex justify-center mb-2">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-xs font-semibold animate-pulse">
+                  <AlertTriangle className="h-4 w-4 mr-1" /> Warning
+                </span>
+              </div>
+              <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4 animate-bounce" />
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                 Cancel Subscription?
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
-                Are you sure you want to cancel your premium subscription? You'll lose access to premium features at the end of your current billing period.
+              <p className="text-gray-600 dark:text-gray-300 mb-2">
+                If you cancel, you’ll lose access to all premium features at the end of your current billing period.
+              </p>
+              <p className="text-sm text-red-500 dark:text-red-300 mb-6">
+                This action cannot be undone.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:space-x-4">
                 <button
                   onClick={() => setShowCancelConfirm(false)}
-                  className="btn-secondary order-2 sm:order-1"
+                  className="flex items-center justify-center btn-secondary order-2 sm:order-1 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-800 transition-colors font-semibold"
                 >
+                  <CheckCircle className="h-4 w-4 mr-2" />
                   Keep Subscription
                 </button>
                 <button
                   onClick={handleCancelSubscription}
-                  className="btn-outline text-red-600 border-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-900/20 order-1 sm:order-2"
+                  className="flex items-center justify-center order-1 sm:order-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-red-400 transition-all border-0"
                 >
-                  Cancel Subscription
+                  <AlertTriangle className="h-4 w-4 mr-2 text-white animate-pulse" />
+                  Yes, Cancel Premium
                 </button>
               </div>
             </div>

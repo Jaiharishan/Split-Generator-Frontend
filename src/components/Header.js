@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Receipt, Moon, Sun, User, LogOut, Settings, ChevronDown, Crown, Menu, X } from 'lucide-react';
+import { Receipt, Moon, Sun, User, LogOut, Settings, ChevronDown, Crown, Menu, X, BarChart2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { usePremium } from '../contexts/PremiumContext';
@@ -110,6 +110,14 @@ function Header() {
                 >
                   Templates
                 </Link>
+                {isPremium && (
+                  <Link
+                    to="/analytics"
+                    className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-1"
+                  >
+                    <BarChart2 className="h-4 w-4" /> Analytics
+                  </Link>
+                )}
                 <Link
                   to="/premium"
                   className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
@@ -292,6 +300,15 @@ function Header() {
               >
                 Templates
               </Link>
+              {isPremium && (
+                <Link
+                  to="/analytics"
+                  onClick={closeMobileMenu}
+                  className="flex items-center px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                >
+                  <BarChart2 className="h-5 w-5 mr-3" /> Analytics
+                </Link>
+              )}
               <Link
                 to="/premium"
                 onClick={closeMobileMenu}

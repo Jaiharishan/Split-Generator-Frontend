@@ -23,6 +23,7 @@ function SettingsPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
@@ -323,7 +324,7 @@ function SettingsPage() {
               {isPremium ? (
                 <div className="space-y-3">
                   <button
-                    onClick={cancelPremium}
+                    onClick={() => setShowCancelConfirm(true)}
                     disabled={premiumLoading}
                     className="btn-secondary w-full text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
@@ -399,6 +400,46 @@ function SettingsPage() {
           </div>
         </div>
       </div>
+      {/* Cancel Confirmation Modal */}
+      {showCancelConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full shadow-xl border border-red-200 dark:border-red-700">
+            <div className="text-center">
+              <div className="flex justify-center mb-2">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-xs font-semibold">
+                  <XCircle className="h-4 w-4 mr-1" /> Warning
+                </span>
+              </div>
+              <XCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Cancel Subscription?
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-2">
+                If you cancel, you’ll lose access to all premium features at the end of your current billing period.
+              </p>
+              <p className="text-sm text-red-500 dark:text-red-300 mb-6">
+                This action cannot be undone.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 sm:space-x-4">
+                <button
+                  onClick={() => setShowCancelConfirm(false)}
+                  className="flex items-center justify-center btn-secondary order-2 sm:order-1 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-800 transition-colors font-semibold"
+                >
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Keep Subscription
+                </button>
+                <button
+                  onClick={async () => { await cancelPremium(); setShowCancelConfirm(false); }}
+                  className="flex items-center justify-center order-1 sm:order-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-red-400 transition-all border-0"
+                >
+                  <XCircle className="h-4 w-4 mr-2 text-white" />
+                  Yes, Cancel Premium
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
