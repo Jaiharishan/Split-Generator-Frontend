@@ -153,15 +153,25 @@ function Header() {
                       <User className="h-4 w-4 text-primary-600 dark:text-primary-400" />
                     </div>
                   )}
-                  <span className="hidden md:block text-sm font-medium">{user.name}</span>
+                  <span className="hidden md:block text-sm font-medium flex items-center gap-1">
+                    {user.name}
+                    {isPremium && (
+                      <span className="inline-flex items-center px-2 py-0.5 ml-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                        <Crown className="h-3 w-3 mr-1 text-yellow-500" /> Premium
+                      </span>
+                    )}
+                  </span>
                   <ChevronDown className="h-4 w-4" />
                 </button>
 
                 {/* Dropdown Menu */}
                 {showProfileMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
-                    <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
+                    <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-1">
+                        {user.name}
+                        {isPremium && <Crown className="h-4 w-4 text-yellow-500 ml-1" />}
+                      </p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
                     </div>
                     

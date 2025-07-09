@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Check, Crown, Zap, Star } from 'lucide-react';
 import PremiumService from '../services/premiumService';
 import { usePremium } from '../contexts/PremiumContext';
+import { loadStripe } from '@stripe/stripe-js';
 
 function PremiumPlans({ onClose, showUpgradePrompt = false }) {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [redirecting, setRedirecting] = useState(false);
   const { upgradeToPremium, isPremium, loading: upgradeLoading } = usePremium();
 
   useEffect(() => {
@@ -27,12 +29,20 @@ function PremiumPlans({ onClose, showUpgradePrompt = false }) {
 
   const handleUpgrade = async () => {
     if (!selectedPlan) return;
-
+    setRedirecting(true);
     try {
-      await upgradeToPremium(selectedPlan.interval);
-      onClose?.();
+      // Use the plan's interval to determine 'monthly' or 'yearly'
+      const planType = selectedPlan.interval === 'year' ? 'yearly' : 'monthly';
+      const result = await PremiumService.createCheckoutSession(planType);
+      if (result.success && result.url) {
+        window.location.href = result.url;
+      } else {
+        setRedirecting(false);
+        alert('Failed to start checkout. Please try again.');
+      }
     } catch (error) {
-      console.error('Error upgrading:', error);
+      setRedirecting(false);
+      alert('Error starting checkout. Please try again.');
     }
   };
 
@@ -137,11 +147,11 @@ function PremiumPlans({ onClose, showUpgradePrompt = false }) {
         <div className="text-center">
           <button
             onClick={handleUpgrade}
-            disabled={upgradeLoading}
+            disabled={upgradeLoading || redirecting}
             className="btn-primary text-lg px-8 py-3 flex items-center justify-center mx-auto"
           >
             <Zap className="h-5 w-5 mr-2" />
-            {upgradeLoading ? 'Upgrading...' : `Upgrade to ${selectedPlan.name}`}
+            {redirecting ? 'Redirecting...' : upgradeLoading ? 'Upgrading...' : `Upgrade to ${selectedPlan.name}`}
           </button>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
             You can cancel anytime

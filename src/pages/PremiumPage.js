@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Crown, Settings, CreditCard, Zap, CheckCircle, AlertTriangle } from 'lucide-react';
 import { usePremium } from '../contexts/PremiumContext';
 import UsageLimits from '../components/UsageLimits';
 import PremiumPlans from '../components/PremiumPlans';
+import { useLocation } from 'react-router-dom';
 
 function PremiumPage() {
   const { premiumStatus, isPremium, cancelPremium, loading } = usePremium();
   const [showPlans, setShowPlans] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showCongrats, setShowCongrats] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Show congrats modal if redirected from Stripe with success=true
+    if (isPremium && location.search.includes('success=true')) {
+      setShowCongrats(true);
+      // Remove the query param from the URL after showing
+      window.history.replaceState({}, document.title, location.pathname);
+    }
+  }, [isPremium, location]);
 
   const handleCancelSubscription = async () => {
     try {
@@ -36,6 +48,43 @@ function PremiumPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Congrats Modal */}
+      {showCongrats && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-8 shadow-xl text-center">
+            <div className="flex justify-center mb-4">
+              <span className="p-3 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full">
+                <Crown className="h-10 w-10 text-white" />
+              </span>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome to Premium!</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">You’re now a Premium user. Enjoy your new features:</p>
+            <ul className="text-left space-y-2 mb-4">
+              {[
+                'Unlimited bills per month',
+                'Unlimited participants per bill',
+                'Unlimited templates',
+                'PDF receipt support',
+                'Receipt storage',
+                'Advanced analytics',
+                'Multiple export formats',
+                'Priority support'
+              ].map((feature, idx) => (
+                <li key={idx} className="flex items-center text-gray-800 dark:text-gray-200">
+                  <CheckCircle className="h-4 w-4 text-green-500 mr-2" /> {feature}
+                </li>
+              ))}
+            </ul>
+            <button
+              className="btn-primary w-full"
+              onClick={() => setShowCongrats(false)}
+            >
+              Get Started
+            </button>
+          </div>
+        </div>
+      )}
+      {/* End Congrats Modal */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -51,6 +100,12 @@ function PremiumPage() {
                 <p className="text-gray-600 dark:text-gray-300">
                   Manage your subscription and usage
                 </p>
+                {isPremium && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <span className="text-green-700 dark:text-green-300 font-semibold">You are a Premium user! Enjoy all premium features below.</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -172,13 +227,9 @@ function PremiumPage() {
                   'Multiple export formats',
                   'Priority support'
                 ].map((feature, index) => (
-                  <div key={index} className="flex items-start">
-                    <CheckCircle className={`h-4 w-4 mr-3 mt-0.5 flex-shrink-0 ${
-                      isPremium ? 'text-green-500' : 'text-gray-300'
-                    }`} />
-                    <span className={`text-sm ${
-                      isPremium ? 'text-gray-700 dark:text-gray-300' : 'text-gray-400'
-                    }`}>
+                  <div key={index} className={`flex items-start rounded-lg px-2 py-1 ${isPremium ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
+                    <CheckCircle className={`h-4 w-4 mr-3 mt-0.5 flex-shrink-0 ${isPremium ? 'text-green-500' : 'text-gray-300'}`} />
+                    <span className={`text-sm ${isPremium ? 'text-green-800 dark:text-green-200 font-semibold' : 'text-gray-400'}`}>
                       {feature}
                     </span>
                   </div>

@@ -86,6 +86,17 @@ class PremiumService {
       throw error;
     }
   }
+
+  // Create Stripe Checkout session
+  static async createCheckoutSession(plan = 'monthly') {
+    try {
+      const response = await api.post('/premium/create-checkout-session', { plan });
+      return response.data;
+    } catch (error) {
+      console.error('Error creating Stripe Checkout session:', error);
+      throw error;
+    }
+  }
 }
 
 export default PremiumService; 

@@ -78,7 +78,9 @@ function SettingsPage() {
                   <div className="flex items-center justify-center sm:justify-start space-x-2">
                     <span className="text-xl font-semibold text-gray-900 dark:text-white">{user?.name}</span>
                     {isPremium && (
-                      <Crown className="h-5 w-5 text-yellow-500" />
+                      <span className="inline-flex items-center px-2 py-0.5 ml-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                        <Crown className="h-4 w-4 mr-1 text-yellow-500" /> Premium
+                      </span>
                     )}
                   </div>
                   <div className="flex items-center justify-center sm:justify-start space-x-2 mt-1">
@@ -218,7 +220,12 @@ function SettingsPage() {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Premium Status</h3>
                 {isPremium && <Crown className="h-6 w-6 text-yellow-500" />}
               </div>
-              
+              {isPremium && (
+                <div className="mb-4 flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/10 rounded-lg">
+                  <Crown className="h-5 w-5 text-yellow-500" />
+                  <span className="text-green-700 dark:text-green-300 font-semibold">You are a Premium user! Enjoy all premium features below.</span>
+                </div>
+              )}
               {premiumStatus ? (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -227,7 +234,6 @@ function SettingsPage() {
                       {isPremium ? 'Premium' : 'Free'}
                     </span>
                   </div>
-                  
                   {isPremium && premiumStatus.limits?.subscription_end && (
                     <div className="flex items-center justify-between">
                       <span className="text-gray-700 dark:text-gray-300">Renews:</span>
@@ -236,7 +242,6 @@ function SettingsPage() {
                       </span>
                     </div>
                   )}
-
                   {/* Usage Stats */}
                   <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
                     <h4 className="font-medium text-gray-900 dark:text-white mb-3">Usage This Month</h4>
@@ -260,7 +265,6 @@ function SettingsPage() {
                           ></div>
                         </div>
                       </div>
-                      
                       <div>
                         <div className="flex justify-between text-sm mb-1">
                           <span className="text-gray-600 dark:text-gray-400">Templates Created</span>
@@ -289,27 +293,27 @@ function SettingsPage() {
                 </div>
               )}
             </div>
-
             {/* Premium Features */}
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Premium Features</h3>
               <div className="space-y-3">
-                <div className="flex items-center">
-                  <span className="text-gray-700 dark:text-gray-300">PDF Receipt Support</span>
-                  {isPremium ? <CheckCircle className="h-4 w-4 text-green-500 ml-auto" /> : <XCircle className="h-4 w-4 text-gray-400 ml-auto" />}
-                </div>
-                <div className="flex items-center">
-                  <span className="text-gray-700 dark:text-gray-300">Advanced Analytics</span>
-                  {isPremium ? <CheckCircle className="h-4 w-4 text-green-500 ml-auto" /> : <XCircle className="h-4 w-4 text-gray-400 ml-auto" />}
-                </div>
-                <div className="flex items-center">
-                  <span className="text-gray-700 dark:text-gray-300">Multiple Export Formats</span>
-                  {isPremium ? <CheckCircle className="h-4 w-4 text-green-500 ml-auto" /> : <XCircle className="h-4 w-4 text-gray-400 ml-auto" />}
-                </div>
-                <div className="flex items-center">
-                  <span className="text-gray-700 dark:text-gray-300">Priority Support</span>
-                  {isPremium ? <CheckCircle className="h-4 w-4 text-green-500 ml-auto" /> : <XCircle className="h-4 w-4 text-gray-400 ml-auto" />}
-                </div>
+                {[
+                  'Unlimited bills per month',
+                  'Unlimited participants per bill',
+                  'Unlimited templates',
+                  'PDF receipt support',
+                  'Receipt storage',
+                  'Advanced analytics',
+                  'Multiple export formats',
+                  'Priority support'
+                ].map((feature, idx) => (
+                  <div key={idx} className={`flex items-start rounded-lg px-2 py-1 ${isPremium ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
+                    <CheckCircle className={`h-4 w-4 mr-3 mt-0.5 flex-shrink-0 ${isPremium ? 'text-green-500' : 'text-gray-300'}`} />
+                    <span className={`text-sm ${isPremium ? 'text-green-800 dark:text-green-200 font-semibold' : 'text-gray-400'}`}>
+                      {feature}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
 
