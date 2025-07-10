@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { usePremium } from '../contexts/PremiumContext';
 import { 
   User, Mail, Sun, Moon, Lock, Save, Crown, 
-  LogOut, CheckCircle, XCircle
+  LogOut, CheckCircle, XCircle, Bell, Send, Shield, Settings,
+  AlertTriangle, CreditCard, Users, FileText, BarChart2, Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import NotificationService from '../services/notificationService';
 
 function SettingsPage() {
   const { user, changePassword, logout } = useAuth();
@@ -24,6 +26,160 @@ function SettingsPage() {
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+  // Notification settings state
+  const [notificationPreferences, setNotificationPreferences] = useState({
+    emailNotifications: true,
+    preferences: {
+      welcome: true,
+      trialEnding: true,
+      paymentFailed: true,
+      subscriptionCancelled: true,
+      billShared: true,
+      paymentReminder: true,
+      usageAlert: true,
+      subscriptionUpgraded: true
+    }
+  });
+  const [notificationLoading, setNotificationLoading] = useState(true);
+  const [savingNotifications, setSavingNotifications] = useState(false);
+  const [sendingTest, setSendingTest] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [notificationError, setNotificationError] = useState(null);
+
+  useEffect(() => {
+    if (activeTab === 'notifications') {
+      loadNotificationPreferences();
+    }
+  }, [activeTab]);
+
+  const loadNotificationPreferences = async () => {
+    try {
+      setNotificationLoading(true);
+      setNotificationError(null);
+      const response = await NotificationService.getPreferences();
+      setNotificationPreferences(response.data);
+    } catch (err) {
+      setNotificationError('Failed to load notification preferences');
+      console.error('Error loading preferences:', err);
+    } finally {
+      setNotificationLoading(false);
+    }
+  };
+
+  const handleGlobalNotificationToggle = (enabled) => {
+    setNotificationPreferences(prev => ({
+      ...prev,
+      emailNotifications: enabled
+    }));
+  };
+
+  const handleNotificationPreferenceToggle = (key, enabled) => {
+    setNotificationPreferences(prev => ({
+      ...prev,
+      preferences: {
+        ...prev.preferences,
+        [key]: enabled
+      }
+    }));
+  };
+
+  const handleSaveNotifications = async () => {
+    try {
+      setSavingNotifications(true);
+      setNotificationError(null);
+      setNotificationMessage(null);
+      
+      await NotificationService.updatePreferences(notificationPreferences);
+      setNotificationMessage('Notification preferences saved successfully!');
+      
+      // Clear message after 3 seconds
+      setTimeout(() => setNotificationMessage(null), 3000);
+    } catch (err) {
+      setNotificationError('Failed to save notification preferences');
+      console.error('Error saving preferences:', err);
+    } finally {
+      setSavingNotifications(false);
+    }
+  };
+
+  const handleTestEmail = async () => {
+    try {
+      setSendingTest(true);
+      setNotificationError(null);
+      setNotificationMessage(null);
+      
+      await NotificationService.sendTestEmail();
+      setNotificationMessage('Test email sent successfully! Check your inbox.');
+      
+      // Clear message after 5 seconds
+      setTimeout(() => setNotificationMessage(null), 5000);
+    } catch (err) {
+      setNotificationError('Failed to send test email. Make sure email notifications are enabled.');
+      console.error('Error sending test email:', err);
+    } finally {
+      setSendingTest(false);
+    }
+  };
+
+  const notificationTypes = [
+    {
+      key: 'welcome',
+      title: 'Welcome Emails',
+      description: 'Receive a welcome email when you first sign up',
+      icon: <Mail className="h-5 w-5" />,
+      color: 'text-blue-600'
+    },
+    {
+      key: 'trialEnding',
+      title: 'Trial Ending',
+      description: 'Get notified when your premium trial is about to end',
+      icon: <AlertTriangle className="h-5 w-5" />,
+      color: 'text-orange-600'
+    },
+    {
+      key: 'paymentFailed',
+      title: 'Payment Failures',
+      description: 'Receive alerts when payments fail',
+      icon: <XCircle className="h-5 w-5" />,
+      color: 'text-red-600'
+    },
+    {
+      key: 'subscriptionCancelled',
+      title: 'Subscription Cancelled',
+      description: 'Get notified when your subscription is cancelled',
+      icon: <CreditCard className="h-5 w-5" />,
+      color: 'text-gray-600'
+    },
+    {
+      key: 'billShared',
+      title: 'Bill Sharing',
+      description: 'Receive notifications when bills are shared with you',
+      icon: <Users className="h-5 w-5" />,
+      color: 'text-green-600'
+    },
+    {
+      key: 'paymentReminder',
+      title: 'Payment Reminders',
+      description: 'Get reminders about outstanding balances',
+      icon: <FileText className="h-5 w-5" />,
+      color: 'text-yellow-600'
+    },
+    {
+      key: 'usageAlert',
+      title: 'Usage Alerts',
+      description: 'Get notified when approaching free plan limits',
+      icon: <BarChart2 className="h-5 w-5" />,
+      color: 'text-purple-600'
+    },
+    {
+      key: 'subscriptionUpgraded',
+      title: 'Subscription Upgraded',
+      description: 'Receive confirmation when upgrading to premium',
+      icon: <Zap className="h-5 w-5" />,
+      color: 'text-indigo-600'
+    }
+  ];
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
@@ -56,6 +212,7 @@ function SettingsPage() {
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: User },
+    { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'premium', label: 'Premium', icon: Crown }
   ];
 
@@ -209,6 +366,180 @@ function SettingsPage() {
                 </button>
               </div>
             </div>
+          </div>
+        );
+
+      case 'notifications':
+        return (
+          <div className="space-y-6">
+            {/* Header */}
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
+              <div className="flex items-center gap-3 mb-2">
+                <Bell className="h-6 w-6 text-primary-600" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Email Notifications
+                </h3>
+              </div>
+              <p className="text-gray-600 dark:text-gray-400">
+                Manage your email notification preferences and stay updated with important events.
+              </p>
+            </div>
+
+            {/* Messages */}
+            {notificationMessage && (
+              <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <span className="text-green-800 dark:text-green-200">{notificationMessage}</span>
+                </div>
+              </div>
+            )}
+
+            {notificationError && (
+              <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <XCircle className="h-5 w-5 text-red-600" />
+                  <span className="text-red-800 dark:text-red-200">{notificationError}</span>
+                </div>
+              </div>
+            )}
+
+            {notificationLoading ? (
+              <div className="animate-pulse space-y-4">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                ))}
+              </div>
+            ) : (
+              <>
+                {/* Global Toggle */}
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-6 w-6 text-primary-600" />
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          Email Notifications
+                        </h4>
+                        <p className="text-gray-600 dark:text-gray-400">
+                          Enable or disable all email notifications
+                        </p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={notificationPreferences.emailNotifications}
+                        onChange={(e) => handleGlobalNotificationToggle(e.target.checked)}
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Individual Notification Types */}
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
+                  <div className="flex items-center gap-2 mb-6">
+                    <Settings className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Notification Types
+                    </h4>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {notificationTypes.map((type) => (
+                      <div
+                        key={type.key}
+                        className={`flex items-center justify-between p-4 rounded-lg border transition-colors ${
+                          notificationPreferences.emailNotifications
+                            ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+                            : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 opacity-50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={type.color}>
+                            {type.icon}
+                          </div>
+                          <div>
+                            <h5 className="font-medium text-gray-900 dark:text-white">
+                              {type.title}
+                            </h5>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              {type.description}
+                            </p>
+                          </div>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={notificationPreferences.preferences[type.key]}
+                            onChange={(e) => handleNotificationPreferenceToggle(type.key, e.target.checked)}
+                            disabled={!notificationPreferences.emailNotifications}
+                          />
+                          <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600 peer-disabled:opacity-50"></div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button
+                    onClick={handleSaveNotifications}
+                    disabled={savingNotifications}
+                    className="flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white font-semibold rounded-lg shadow-sm transition-colors"
+                  >
+                    {savingNotifications ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4" />
+                        Save Preferences
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={handleTestEmail}
+                    disabled={sendingTest || !notificationPreferences.emailNotifications}
+                    className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-white font-semibold rounded-lg shadow-sm transition-colors"
+                  >
+                    {sendingTest ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        Send Test Email
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Info Section */}
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <Shield className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h5 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+                        Privacy & Control
+                      </h5>
+                      <p className="text-sm text-blue-800 dark:text-blue-200">
+                        You have full control over your notification preferences. You can change these settings at any time, and we'll never share your email with third parties.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         );
 
