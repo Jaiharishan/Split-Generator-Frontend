@@ -1,44 +1,42 @@
 # Split Generator – Frontend
 
-Split Generator is a modern web app for splitting grocery bills and group expenses. Upload e-bills or receipt images, add participants, assign products, and instantly see who owes what. The frontend is built with React, Tailwind CSS, and provides a beautiful, responsive, and accessible user experience.
+Split Generator is a modern web app for splitting grocery bills and group expenses. Upload receipts, add participants, assign products, and instantly see who owes what. The frontend is built with React, Tailwind CSS, and provides a beautiful, responsive, and accessible user experience.
 
 ---
 
 ## 🌟 Product Overview
-
-**Split Generator** makes group bill splitting effortless:
-- Upload receipts (images or PDFs) and extract items using OCR
-- Add participants and assign products to each person
+- Upload receipts (images) and extract items using OCR
+- Add participants and assign products
 - See real-time totals and who owes what
-- Save participant groups as templates for quick reuse
+- Save participant groups as templates
 - Export bills for record-keeping
 - Secure authentication (email/password & Google OAuth)
+- Premium: Analytics, unlimited usage, advanced features
+- Notifications: Manage email preferences, get alerts
 - Light/dark theme support
 
 ---
 
 ## 🚀 Features
-
-- **Receipt Upload & OCR**: Upload images or PDFs, extract items using Tesseract.js and PDF.js
-- **Participant Management**: Add, edit, and color-code participants
-- **Product Assignment**: Assign products to participants, split costs automatically
-- **Bill Templates**: Save and reuse common participant groups
-- **Bill Export**: Download a text summary of any bill
-- **Authentication**: Register, login, Google OAuth, protected routes
-- **Responsive UI**: Works great on desktop and mobile
+- **Receipt Upload & OCR**: Upload images, extract items
+- **Participant Management**: Add, edit, color-code participants
+- **Product Assignment**: Assign products, split costs
+- **Bill Templates**: Save/reuse groups
+- **Analytics**: Premium users get charts, stats, and insights
+- **Notifications**: Manage email preferences, test emails
+- **Premium**: Upgrade for unlimited usage, analytics, and more
+- **Authentication**: Register, login, Google OAuth
+- **Responsive UI**: Works on desktop and mobile
 - **Dark Mode**: Beautiful, accessible dark theme
 
 ---
 
 ## 🛠️ Tech Stack
-
 - **React** (with hooks & context)
-- **React Router** (routing)
-- **Tailwind CSS** (utility-first styling, dark mode)
-- **Lucide React** (icons)
-- **Tesseract.js** (client-side OCR)
-- **PDF.js** (PDF parsing)
-- **Axios** (API requests)
+- **React Router**
+- **Tailwind CSS**
+- **Lucide React**
+- **Axios**
 
 ---
 
@@ -71,32 +69,45 @@ The app will run at [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 🧾 Bill Splitting Flow
-1. **Create Bill**: Enter a title, upload a receipt, or add products manually
-2. **Add Participants**: Add names and assign colors
-3. **Assign Products**: Assign each product to one or more participants
-4. **View Totals**: See who owes what in real time
-5. **Export Bill**: Download a summary for your records
+## 💎 Premium & Analytics
+- Upgrade to premium for unlimited bills, advanced analytics, and more
+- View analytics charts (spending, frequency, top participants, etc.)
+- Premium status and usage limits shown in the UI
 
 ---
 
-## 🗂️ Project Structure
-- `src/pages/` – Main pages (Home, Bills, Create, Bill Details, Templates, Settings)
+## 🔔 Notifications
+- Manage email notification preferences in settings
+- Send test emails to verify setup
+- Get notified about premium, usage, and bill events
+
+---
+
+## 📝 API Endpoints (Highlights)
+- `POST /api/auth/register` – Register
+- `POST /api/auth/login` – Login
+- `GET /api/bills` – List bills
+- `POST /api/bills` – Create bill
+- `GET /api/analytics/overview` – Analytics (premium)
+- `GET /api/notifications/preferences` – Get notification prefs
+- `PUT /api/notifications/preferences` – Update notification prefs
+- `POST /api/premium/upgrade` – Upgrade to premium
+- `POST /api/upload/image` – Upload receipt
+
+---
+
+## 🏗️ Project Structure
+- `src/pages/` – Main pages (Home, Bills, Create, Bill Details, Templates, Analytics, Settings)
 - `src/components/` – UI components (Header, ReceiptParser, GoogleOAuth, etc.)
-- `src/contexts/` – React context for auth, theme, etc.
+- `src/contexts/` – React context for auth, theme, premium, etc.
 - `src/services/` – API and utility services
 
 ---
 
 ## 🤝 Contributing
-Pull requests and suggestions are welcome! Please open an issue for major changes.
+Pull requests and suggestions are welcome!
 
 ---
 
 ## 📄 License
 MIT License. See main repo for details.
-
----
-
-## 💡 About
-Split Generator is designed to make group expense splitting painless, accurate, and fun. Built with love for roommates, friends, and anyone who hates doing math after shopping!
